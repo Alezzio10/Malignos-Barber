@@ -194,11 +194,17 @@
   background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
+.barra-sitio__inicio {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-right: auto;
+  min-width: 0;
+}
 .barra-sitio__marca {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-right: auto;
   font-family: var(--font-display);
   font-size: 20px;
   color: var(--gold);
@@ -237,7 +243,37 @@
   transform-origin: right;
   transition: transform 320ms var(--ease-out);
 }
+/* Mismo aspecto que los enlaces del menú; el relleno dorado al pasar el ratón va pegado al texto. */
+.barra-sitio__casa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition:
+    background-color var(--t-hover) ease,
+    border-color var(--t-hover) ease,
+    color var(--t-hover) ease,
+    transform var(--t-press) var(--ease-out);
+}
+.barra-sitio__casa svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+.barra-sitio__casa:active {
+  transform: scale(0.96);
+}
 @media (hover: hover) and (pointer: fine) {
+  .barra-sitio__casa:hover {
+    background: var(--gold);
+    color: var(--on-gold);
+  }
   .barra-sitio__nav a:hover {
     color: var(--ink);
   }
@@ -251,9 +287,31 @@
     display: none;
   }
 }
+/* En teléfonos el botón de inicio queda solo con el icono. */
+@media (max-width: 640px) {
+  .barra-sitio {
+    gap: 12px;
+  }
+  .barra-sitio__inicio {
+    gap: 10px;
+  }
+  .barra-sitio__casa {
+    padding: 6px;
+  }
+  .barra-sitio__casa svg {
+    width: 18px;
+    height: 18px;
+  }
+  .barra-sitio__casa-texto {
+    display: none;
+  }
+}
 @media (max-width: 420px) {
   .barra-sitio__marca {
-    font-size: 17px;
+    font-size: 16px;
+  }
+  .barra-sitio__nombre {
+    display: none;
   }
 }
 

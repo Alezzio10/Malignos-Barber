@@ -1,11 +1,21 @@
+import { House } from 'lucide-react';
 import { motion, useMotionValueEvent, useScroll } from 'motion/react';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 // Se esconde al bajar y vuelve al subir, para dejar la pantalla a las fotos.
 export function BarraSitio({ conNavegacion = true, accion = true }) {
   const { scrollY } = useScroll();
   const [oculta, setOculta] = useState(false);
+  const { pathname, hash } = useLocation();
+
+  // Desde otra página se llega a la principal desde arriba; si ya estás en ella, el enlace
+  // no navega, así que se sube al inicio con un desplazamiento suave.
+  function irArriba() {
+    if (pathname !== '/') return window.scrollTo(0, 0);
+    if (hash) window.history.replaceState(null, '', '/');
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
 
   useMotionValueEvent(scrollY, 'change', (y) => {
     const anterior = scrollY.getPrevious() ?? 0;
@@ -18,10 +28,16 @@ export function BarraSitio({ conNavegacion = true, accion = true }) {
       animate={{ transform: oculta ? 'translateY(-100%)' : 'translateY(0%)' }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Link to="/" className="barra-sitio__marca">
-        <img src="/logo.png" alt="" width="40" height="40" className="logo-luz" />
-        Maligno's Barber
-      </Link>
+      <div className="barra-sitio__inicio">
+        <Link to="/" className="barra-sitio__marca" aria-label="Maligno's Barber" onClick={irArriba}>
+          <img src="/logo.png" alt="" width="40" height="40" className="logo-luz" />
+          <span className="barra-sitio__nombre">Maligno's Barber</span>
+        </Link>
+        <Link to="/" className="barra-sitio__casa" aria-label="Ir a la página principal" onClick={irArriba}>
+          <House aria-hidden="true" />
+          <span className="barra-sitio__casa-texto">Inicio</span>
+        </Link>
+      </div>
       {conNavegacion && (
         <nav className="barra-sitio__nav" aria-label="Secciones">
           <a href="/#servicios">Servicios</a>
