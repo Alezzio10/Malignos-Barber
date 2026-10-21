@@ -1,12 +1,8 @@
 import { House } from 'lucide-react';
-import { motion, useMotionValueEvent, useScroll } from 'motion/react';
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
 
-// Se esconde al bajar y vuelve al subir, para dejar la pantalla a las fotos.
+// Barra fija arriba: se queda visible mientras haces scroll.
 export function BarraSitio({ conNavegacion = true, accion = true }) {
-  const { scrollY } = useScroll();
-  const [oculta, setOculta] = useState(false);
   const { pathname, hash } = useLocation();
 
   // Desde otra página se llega a la principal desde arriba; si ya estás en ella, el enlace
@@ -17,17 +13,8 @@ export function BarraSitio({ conNavegacion = true, accion = true }) {
     window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }
 
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    const anterior = scrollY.getPrevious() ?? 0;
-    setOculta(y > 160 && y > anterior);
-  });
-
   return (
-    <motion.header
-      className="barra-sitio"
-      animate={{ transform: oculta ? 'translateY(-100%)' : 'translateY(0%)' }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <header className="barra-sitio">
       <Link to="/" className="barra-sitio__marca" aria-label="Maligno's Barber" onClick={irArriba}>
         <img src="/logo.png" alt="" width="40" height="40" className="logo-luz" />
         <span className="barra-sitio__nombre">Maligno's Barber</span>
@@ -52,6 +39,6 @@ export function BarraSitio({ conNavegacion = true, accion = true }) {
           Agendar cita
         </Link>
       )}
-    </motion.header>
+    </header>
   );
 }
