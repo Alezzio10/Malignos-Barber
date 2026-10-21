@@ -496,12 +496,55 @@
 .servicios {
   padding: clamp(96px, 12vw, 170px) var(--gutter);
 }
-/* Cards del tamaño del video: unas 290px de ancho, casi cuadradas. */
+/* Cards de hasta 340px repartidas a lo ancho. Entre columna y columna hay un carril
+   angosto (--carril) donde va el lema vertical; --columnas lo lee la página para
+   calcular rellenos y lemas. */
 .servicios__grid {
+  --columnas: 3;
+  --carril: 56px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 290px));
+  grid-template-columns:
+    minmax(0, 340px) var(--carril) minmax(0, 340px)
+    var(--carril) minmax(0, 340px);
   justify-content: space-between;
-  gap: clamp(56px, 5vw, 72px) 24px;
+  row-gap: clamp(32px, 4vw, 56px);
+}
+.servicios__lema {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Las líneas llegan casi hasta la letra, dejando solo una separación mínima. */
+  gap: 8px;
+  /* Letras derechas, una debajo de otra: el texto se lee de arriba hacia abajo. */
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3vw, 40px);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--tinta);
+}
+/* Líneas verticales arriba y abajo del texto, de punta a punta de la cuadrícula. */
+.servicios__lema::before,
+.servicios__lema::after {
+  content: "";
+  flex: 1;
+  block-size: 2px;
+  background: var(--tinta);
+}
+@media (min-width: 1480px) {
+  /* Con 4 columnas hay solo 2 filas: la letra baja para que el texto quepa con sus líneas. */
+  .servicios__lema {
+    font-size: 28px;
+  }
+  .servicios__grid {
+    --columnas: 4;
+    grid-template-columns:
+      minmax(0, 340px) var(--carril) minmax(0, 340px) var(--carril)
+      minmax(0, 340px) var(--carril) minmax(0, 340px);
+  }
 }
 .servicio__precio {
   position: absolute;
@@ -516,8 +559,17 @@
   transform: rotate(-4deg);
   transition: transform var(--t-ui) var(--ease-out);
 }
+/* En tablets, dos columnas que ocupan todo el ancho con un carril en medio. */
+@media (max-width: 900px) {
+  .servicios__grid {
+    --columnas: 2;
+    --carril: 48px;
+    grid-template-columns: minmax(0, 1fr) var(--carril) minmax(0, 1fr);
+  }
+}
 @media (max-width: 600px) {
   .servicios__grid {
+    --columnas: 1;
     grid-template-columns: 1fr;
   }
   .tarjeta__foto {
@@ -692,6 +744,7 @@
     top: 100%;
     margin-top: 8px;
     grid-template-rows: 0fr;
+    box-shadow: 0 24px 40px -18px rgb(12 9 6 / 0.6);
     transition: grid-template-rows 500ms var(--ease-out);
   }
   .tarjeta:hover,
@@ -826,7 +879,7 @@
 
 .pasos__lista {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 290px));
+  grid-template-columns: repeat(3, minmax(0, 340px));
   justify-content: space-between;
   gap: 56px 24px;
   align-items: start;
@@ -877,6 +930,11 @@
   max-width: 34ch;
   font-size: 15px;
   color: var(--muted);
+}
+@media (max-width: 900px) {
+  .pasos__lista {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 @media (max-width: 600px) {
   .pasos__lista {

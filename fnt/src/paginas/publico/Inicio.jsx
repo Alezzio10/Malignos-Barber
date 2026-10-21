@@ -1,7 +1,7 @@
 import NumberFlow from '@number-flow/react';
 import { ArrowRight, ArrowUpRight, Plus, RotateCcw } from 'lucide-react';
 import { motion, useInView, useReducedMotion, useScroll, useTransform } from 'motion/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { Tijeras } from '../../components/Dibujos.jsx';
 import { FotoRevelada } from '../../components/FotoRevelada.jsx';
@@ -217,8 +217,60 @@ function fotoDeServicio(nombre, i) {
   return FOTOS[regla ? regla[1] : ORDEN_FOTOS[i % ORDEN_FOTOS.length]];
 }
 
+// Cards que completan la última fila cuando los servicios no llenan todas las columnas.
+const RELLENOS = [
+  {
+    clave: 'agendar',
+    to: '/agendar',
+    foto: { src: '/imagenes/barberia-interior.jpg', ancho: 1800, alto: 1196 },
+    etiqueta: 'Agenda',
+    titulo: '¿No sabes cuál?',
+    texto: 'Agenda tu cita y lo decidimos juntos en la silla.',
+    accion: 'Agendar',
+  },
+  {
+    clave: 'fidelidad',
+    href: '#fidelidad',
+    foto: { src: '/imagenes/maquinas-roja-dorada.jpg', ancho: 1800, alto: 1200 },
+    etiqueta: 'Fidelidad',
+    titulo: 'La décima es gratis',
+    texto: 'Cada corte suma un sello; al completar diez, el siguiente va por la casa.',
+    accion: 'Ver tarjeta',
+  },
+  {
+    clave: 'horario',
+    href: '#horario',
+    foto: { src: '/imagenes/kit-naranja.jpg', ancho: 1800, alto: 1440 },
+    etiqueta: 'Horario',
+    titulo: 'Cuándo venir',
+    texto: 'Revisa los días y horas en que atendemos.',
+    accion: 'Ver horario',
+  },
+];
+
+// Cuántas columnas muestra la cuadrícula ahora mismo (cambia con el ancho de la pantalla).
+// `listo` avisa cuándo la cuadrícula ya existe (aparece cuando llegan los servicios).
+function useColumnas(ref, listo) {
+  const [columnas, setColumnas] = useState(1);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // El CSS publica cuántas columnas de cards hay en --columnas (los carriles del lema no cuentan).
+    const medir = () => setColumnas(Number(getComputedStyle(el).getPropertyValue('--columnas')) || 1);
+    medir();
+    const observador = new ResizeObserver(medir);
+    observador.observe(el);
+    return () => observador.disconnect();
+  }, [ref, listo]);
+  return columnas;
+}
+
 function Servicios({ estado }) {
   const lista = estado.datos ?? [];
+  const grid = useRef(null);
+  const columnas = useColumnas(grid, lista.length > 0);
+  const sobran = lista.length % columnas;
+  const rellenos = sobran ? RELLENOS.slice(0, columnas - sobran) : [];
   return (
     <section id="servicios" className="claro dientes servicios" aria-labelledby="servicios-titulo">
       <div className="cabeza-seccion">
@@ -244,7 +296,7 @@ function Servicios({ estado }) {
       ) : lista.length === 0 ? (
         <p className="texto-seccion">Estamos preparando la lista de servicios. Vuelve pronto.</p>
       ) : (
-        <ul className="servicios__grid">
+        <ul ref={grid} className="servicios__grid">
           {lista.map((s, i) => {
             const foto = fotoDeServicio(s.nombre, i);
             return (
@@ -269,22 +321,58 @@ function Servicios({ estado }) {
               </li>
             );
           })}
+          {rellenos.map((r, i) => (
+            <li key={r.clave} className="tarjeta tarjeta--relleno">
+              <Tarjeta
+                como={r.to ? Link : 'a'}
+                {...(r.to ? { to: r.to } : { href: r.href })}
+                foto={r.foto}
+                retraso={((lista.length + i) % 3) * 0.1}
+                etiqueta={r.etiqueta}
+                titulo={r.titulo}
+              >
+                <p className="tarjeta__texto">{r.texto}</p>
+                <span className="tarjeta__pie">
+                  <span />
+                  <span className="tarjeta__accion">
+                    {r.accion} <ArrowUpRight />
+                  </span>
+                </span>
+              </Tarjeta>
+            </li>
+          ))}
+          <Lemas columnas={columnas} filas={Math.ceil((lista.length + rellenos.length) / columnas)} />
         </ul>
       )}
     </section>
   );
 }
 
+// "Elige tu corte" en vertical dentro de cada carril entre columnas (2.ª, 4.ª… columna de la
+// cuadrícula), ocupando todas las filas. Como se colocan a mano, las cards se acomodan alrededor.
+function Lemas({ columnas, filas }) {
+  return Array.from({ length: columnas - 1 }, (_, i) => (
+    <li
+      key={i}
+      className="servicios__lema"
+      aria-hidden="true"
+      style={{ gridColumn: (i + 1) * 2, gridRow: `1 / span ${filas}` }}
+    >
+      Elige tu corte
+    </li>
+  ));
+}
+
 // Card de foto con nombre (y precio) siempre a la vista. Con ratón, al pasar por encima sube
 // y despliega debajo un panel con el detalle; en pantallas táctiles el panel queda abierto.
-function Tarjeta({ como: Elemento = 'div', foto, retraso, numero, titulo, precio, children, ...resto }) {
+function Tarjeta({ como: Elemento = 'div', foto, retraso, numero, etiqueta, titulo, precio, children, ...resto }) {
   return (
     <Elemento className="tarjeta__marco" {...resto}>
       <span className="aro">
         <FotoRevelada {...foto} retraso={retraso} className="tarjeta__foto">
           {precio && <span className="servicio__precio num">{precio}</span>}
           <span className="tarjeta__rotulo">
-            <span className="tarjeta__num num">{String(numero).padStart(2, '0')}</span>
+            <span className="tarjeta__num num">{etiqueta ?? String(numero).padStart(2, '0')}</span>
             <h3 className="tarjeta__titulo">{titulo}</h3>
           </span>
         </FotoRevelada>
