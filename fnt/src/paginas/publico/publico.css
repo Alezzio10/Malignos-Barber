@@ -194,17 +194,11 @@
   background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
-.barra-sitio__inicio {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-right: auto;
-  min-width: 0;
-}
 .barra-sitio__marca {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-right: auto;
   font-family: var(--font-display);
   font-size: 20px;
   color: var(--gold);
@@ -217,6 +211,7 @@
 }
 .barra-sitio__nav {
   display: flex;
+  align-items: center;
   gap: 30px;
 }
 .barra-sitio__nav a {
@@ -232,35 +227,6 @@
   transition: color var(--t-hover) ease;
 }
 .barra-sitio__nav a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 320ms var(--ease-out);
-}
-/* Mismo aspecto y misma línea dorada al pasar el ratón que los enlaces del menú. */
-.barra-sitio__casa {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 0;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  text-decoration: none;
-  transition:
-    color var(--t-hover) ease,
-    transform var(--t-press) var(--ease-out);
-}
-.barra-sitio__casa::after {
   content: "";
   position: absolute;
   left: 0;
@@ -272,22 +238,18 @@
   transform-origin: right;
   transition: transform 320ms var(--ease-out);
 }
+/* Inicio es un enlace más del menú, con su icono de casa. */
+.barra-sitio__casa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 .barra-sitio__casa svg {
   width: 15px;
   height: 15px;
   flex: none;
 }
-.barra-sitio__casa:active {
-  transform: scale(0.96);
-}
 @media (hover: hover) and (pointer: fine) {
-  .barra-sitio__casa:hover {
-    color: var(--ink);
-  }
-  .barra-sitio__casa:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
   .barra-sitio__nav a:hover {
     color: var(--ink);
   }
@@ -296,20 +258,18 @@
     transform-origin: left;
   }
 }
+/* En pantallas medianas se esconden las secciones; Inicio se queda. */
 @media (max-width: 1060px) {
-  .barra-sitio__nav {
+  .barra-sitio__seccion {
     display: none;
   }
 }
-/* En teléfonos el botón de inicio queda solo con el icono. */
+/* En teléfonos Inicio queda solo con el icono. */
 @media (max-width: 640px) {
   .barra-sitio {
-    gap: 12px;
+    gap: 16px;
   }
-  .barra-sitio__inicio {
-    gap: 10px;
-  }
-  .barra-sitio__casa {
+  .barra-sitio__nav .barra-sitio__casa {
     padding: 8px 2px;
   }
   .barra-sitio__casa svg {

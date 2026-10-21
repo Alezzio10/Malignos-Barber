@@ -28,24 +28,25 @@ export function BarraSitio({ conNavegacion = true, accion = true }) {
       animate={{ transform: oculta ? 'translateY(-100%)' : 'translateY(0%)' }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="barra-sitio__inicio">
-        <Link to="/" className="barra-sitio__marca" aria-label="Maligno's Barber" onClick={irArriba}>
-          <img src="/logo.png" alt="" width="40" height="40" className="logo-luz" />
-          <span className="barra-sitio__nombre">Maligno's Barber</span>
-        </Link>
+      <Link to="/" className="barra-sitio__marca" aria-label="Maligno's Barber" onClick={irArriba}>
+        <img src="/logo.png" alt="" width="40" height="40" className="logo-luz" />
+        <span className="barra-sitio__nombre">Maligno's Barber</span>
+      </Link>
+      {/* Inicio va siempre en el menú; en Agendar y Mi cita es la única opción. */}
+      <nav className="barra-sitio__nav" aria-label="Secciones">
         <Link to="/" className="barra-sitio__casa" aria-label="Ir a la página principal" onClick={irArriba}>
           <House aria-hidden="true" />
           <span className="barra-sitio__casa-texto">Inicio</span>
         </Link>
-      </div>
-      {conNavegacion && (
-        <nav className="barra-sitio__nav" aria-label="Secciones">
-          <a href="/#servicios">Servicios</a>
-          <a href="/#como-funciona">Cómo funciona</a>
-          <a href="/#fidelidad">Fidelidad</a>
-          <a href="/#horario">Horario</a>
-        </nav>
-      )}
+        {conNavegacion && (
+          <>
+            <a href="/#servicios" className="barra-sitio__seccion">Servicios</a>
+            <a href="/#como-funciona" className="barra-sitio__seccion">Cómo funciona</a>
+            <a href="/#fidelidad" className="barra-sitio__seccion">Fidelidad</a>
+            <a href="/#horario" className="barra-sitio__seccion">Horario</a>
+          </>
+        )}
+      </nav>
       {accion && (
         <Link to="/agendar" className="btn btn--oro btn--chico">
           Agendar cita
