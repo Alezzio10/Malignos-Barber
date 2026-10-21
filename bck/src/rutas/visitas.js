@@ -114,7 +114,7 @@ rutasVisitas.post('/', async (req, res) => {
       rows: [visita],
     } = await db.query(
       `INSERT INTO visitas (cliente_id, cita_id, fecha, cuenta_para_fidelidad, notas)
-       VALUES ($1, $2, coalesce($3, now()), $4, $5) RETURNING id`,
+       VALUES ($1, $2, coalesce($3, now()), $4, $5) RETURNING id, fecha`,
       [d.cliente_id, d.cita_id ?? null, d.fecha ?? null, !canje, d.notas ?? null],
     );
 
@@ -124,12 +124,14 @@ rutasVisitas.post('/', async (req, res) => {
       [visita.id, servicioIds, d.servicios.map((s) => s.precio_cobrado ?? precioActual.get(s.servicio_id))],
     );
 
+    // Los pagos cobrados al registrar la visita llevan la fecha de la visita (puede ser una pasada).
     for (const p of d.pagos) {
-      await db.query('INSERT INTO pagos (visita_id, monto, metodo, notas) VALUES ($1, $2, $3, $4)', [
+      await db.query('INSERT INTO pagos (visita_id, monto, metodo, notas, pagado_en) VALUES ($1, $2, $3, $4, $5)', [
         visita.id,
         p.monto,
         p.metodo,
         p.notas ?? null,
+        visita.fecha,
       ]);
     }
 

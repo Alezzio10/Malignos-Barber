@@ -17,6 +17,16 @@ function smtpDesdeEntorno() {
   };
 }
 
+function zonaHoraria() {
+  const zona = process.env.ZONA_HORARIA ?? 'America/El_Salvador';
+  try {
+    new Intl.DateTimeFormat('en', { timeZone: zona });
+  } catch {
+    throw new Error(`ZONA_HORARIA inválida: "${zona}". Usa un nombre IANA, por ejemplo America/El_Salvador`);
+  }
+  return zona;
+}
+
 export const config = {
   puerto: Number(process.env.PORT ?? 3000),
   databaseUrl: requerida('DATABASE_URL'),
@@ -24,7 +34,7 @@ export const config = {
   jwtExpira: process.env.JWT_EXPIRA ?? '7d',
   clienteUrl: process.env.CLIENT_URL ?? 'http://localhost:5173',
   // Zona horaria de la barbería: los horarios de atención se interpretan en esta zona.
-  zonaHoraria: process.env.ZONA_HORARIA ?? 'America/Guatemala',
+  zonaHoraria: zonaHoraria(),
   // Cada cuántos minutos se ofrecen horas en la agenda pública.
   intervaloAgendaMin: Number(process.env.INTERVALO_AGENDA_MIN ?? 15),
   // Hasta cuántos días hacia adelante puede agendar un cliente desde la web.

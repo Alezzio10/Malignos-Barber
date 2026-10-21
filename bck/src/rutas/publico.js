@@ -48,6 +48,26 @@ rutasPublicas.get('/servicios', async (req, res) => {
   res.json(rows);
 });
 
+// Horario semanal y la próxima hora libre para el servicio más corto (portada pública).
+rutasPublicas.get('/agenda-resumen', async (req, res) => {
+  const [{ rows: horarios }, { rows: [corto] }] = await Promise.all([
+    pool.query(
+      `SELECT dia_semana, to_char(hora_inicio, 'HH24:MI') AS hora_inicio, to_char(hora_fin, 'HH24:MI') AS hora_fin
+       FROM horarios ORDER BY dia_semana, hora_inicio`,
+    ),
+    pool.query('SELECT min(duracion_min) AS duracion FROM servicios WHERE activo'),
+  ]);
+
+  let proximaHora = null;
+  if (corto?.duracion && horarios.length) {
+    for (let dia = 0; dia <= 14 && !proximaHora; dia++) {
+      const [primera] = await horasDisponibles(pool, hoyLocal(dia), corto.duracion);
+      proximaHora = primera ?? null;
+    }
+  }
+  res.json({ zona_horaria: config.zonaHoraria, horarios, proxima_hora: proximaHora });
+});
+
 const esquemaDisponibilidad = z.object({
   fecha,
   servicios: z

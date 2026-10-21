@@ -4,21 +4,31 @@ App de gestión para la barbería Malignos Barber: clientes, citas, fidelidad (c
 
 ## Estructura
 
-- `server/` — API en Node.js (Express) y migraciones de la base de datos (PostgreSQL).
-- `client/` — App web en React (pendiente).
+- `bck/` — Backend: API en Node.js (Express) y migraciones de la base de datos (PostgreSQL).
+- `fnt/` — Frontend: app web en React (Vite). Sitio público para agendar y panel del barbero en `/admin`.
 
 ## Puesta en marcha
 
 Requiere Node 20+ y PostgreSQL 13+ con la base `malignosbarber_db` creada.
 
 ```bash
-cd server
+cd bck
 npm install
 cp .env.example .env               # completa DATABASE_URL y JWT_SECRET
 npm run migrate:up                 # crea las tablas
 npm run crear-admin -- "Nombre" correo@ejemplo.com "contraseña"
 npm run dev                        # API en http://localhost:3000
 ```
+
+En otra terminal, el frontend:
+
+```bash
+cd fnt
+npm install
+npm run dev                        # http://localhost:5173 (panel en /admin)
+```
+
+En desarrollo Vite redirige `/api` a la API, así que no hace falta configurar nada más. Las variables opcionales del frontend están en `fnt/.env.example`.
 
 Para deshacer la última migración: `npm run migrate:down`.
 
@@ -34,6 +44,7 @@ Fechas con hora en ISO 8601 con zona (`2026-10-20T10:00:00-06:00`); fechas solas
 | Método | Ruta | Descripción |
 |---|---|---|
 | GET | `/api/publico/servicios` | Servicios activos |
+| GET | `/api/publico/agenda-resumen` | Horario semanal y próxima hora libre |
 | GET | `/api/publico/disponibilidad?fecha=&servicios=1,2` | Horas libres de un día para esos servicios |
 | POST | `/api/publico/citas` | Agendar: `{ nombre, telefono, email?, recordatorio, servicios: [ids], inicio }` |
 | GET | `/api/publico/citas/:id` | Ver una cita (id = uuid del enlace) |
