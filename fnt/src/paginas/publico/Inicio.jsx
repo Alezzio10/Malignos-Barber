@@ -356,7 +356,7 @@ function Lemas({ columnas, filas }) {
       key={i}
       className="servicios__lema"
       aria-hidden="true"
-      style={{ gridColumn: (i + 1) * 2, gridRow: `1 / span ${filas}` }}
+      style={{ gridColumn: (i + 1) * 2, gridRow: `1 / span ${filas}`, animationDelay: `${-0.9 - i * 1.7}s` }}
     >
       Elige tu corte
     </li>

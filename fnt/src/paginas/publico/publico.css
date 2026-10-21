@@ -513,8 +513,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Las líneas llegan casi hasta la letra, dejando solo una separación mínima. */
-  gap: 8px;
+  /* Flota igual que las cards; cada columna de texto lleva su propio desfase (ver Lemas). */
+  animation: flotar 5s ease-in-out infinite;
   /* Letras derechas, una debajo de otra: el texto se lee de arriba hacia abajo. */
   writing-mode: vertical-rl;
   text-orientation: upright;
@@ -525,14 +525,6 @@
   letter-spacing: 0;
   white-space: nowrap;
   color: var(--tinta);
-}
-/* Líneas verticales arriba y abajo del texto, de punta a punta de la cuadrícula. */
-.servicios__lema::before,
-.servicios__lema::after {
-  content: "";
-  flex: 1;
-  block-size: 2px;
-  background: var(--tinta);
 }
 @media (min-width: 1480px) {
   /* Con 4 columnas hay solo 2 filas: la letra baja para que el texto quepa con sus líneas. */
