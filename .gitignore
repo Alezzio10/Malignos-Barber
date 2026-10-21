@@ -4,3 +4,4 @@ dist/
 *.log
 .taste-skill/
 bck/.admin-prueba
+.claude/
