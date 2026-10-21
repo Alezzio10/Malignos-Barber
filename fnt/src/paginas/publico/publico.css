@@ -707,10 +707,6 @@
   gap: clamp(40px, 4vw, 56px) clamp(20px, 2.4vw, 40px);
   align-items: start;
 }
-/* El paso del medio baja un poco: el ojo recorre los tres en diagonal. */
-.paso-tarjeta:nth-child(2) {
-  margin-top: clamp(0px, 7vw, 112px);
-}
 .paso-tarjeta__foto {
   aspect-ratio: 3 / 4;
   margin-bottom: 24px;
