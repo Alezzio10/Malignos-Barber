@@ -496,119 +496,236 @@
 .servicios {
   padding: clamp(96px, 12vw, 170px) var(--gutter);
 }
+/* Cards del tamaño del video: unas 290px de ancho, casi cuadradas. */
 .servicios__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(48px, 5vw, 72px) clamp(20px, 2.4vw, 36px);
-}
-.servicio__enlace {
-  display: grid;
-  gap: 20px;
-  color: inherit;
-  text-decoration: none;
-}
-.servicio__foto {
-  aspect-ratio: 4 / 5;
-  background: var(--crema-2);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 290px));
+  justify-content: space-between;
+  gap: clamp(56px, 5vw, 72px) 24px;
 }
 .servicio__precio {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  padding: 8px 14px;
+  top: 12px;
+  right: 12px;
+  padding: 6px 10px;
   background: var(--naranja);
   color: var(--on-naranja);
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.02em;
   transform: rotate(-4deg);
   transition: transform var(--t-ui) var(--ease-out);
 }
-.servicio__cuerpo {
+@media (max-width: 600px) {
+  .servicios__grid {
+    grid-template-columns: 1fr;
+  }
+  .tarjeta__foto {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* ---------- Aro de colores giratorio alrededor de las fotos ---------- */
+
+@property --giro {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.sitio {
+  --radio-card: 20px;
+}
+.aro {
+  --colores-aro: #d9ae4f, #e0632b, #e2477f, #8a6cf0, #3fb8d9, #7fd17a, #d9ae4f;
+  position: relative;
+  display: block;
+  padding: 3px;
+  border-radius: var(--radio-card);
+}
+/* La línea de colores: el degradado gira y una máscara deja solo el borde de 3px,
+   así el centro nunca se pinta aunque la foto todavía no se haya revelado. */
+.aro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 3px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--giro), var(--colores-aro));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  animation: girar-aro 4s linear infinite;
+  pointer-events: none;
+}
+.aro > .foto {
+  border-radius: calc(var(--radio-card) - 3px);
+}
+@keyframes girar-aro {
+  to {
+    --giro: 360deg;
+  }
+}
+
+/* ---------- Cards desplegables de servicios ---------- */
+
+/* El marco es lo que sube; la foto lleva nombre y precio siempre a la vista y el panel
+   con el detalle va debajo. En pantallas táctiles el panel queda abierto. */
+.tarjeta {
+  position: relative;
+  animation: flotar 5s ease-in-out infinite;
+}
+.tarjeta:nth-child(3n + 2) {
+  animation-delay: -1.7s;
+}
+.tarjeta:nth-child(3n) {
+  animation-delay: -3.4s;
+}
+.tarjeta:nth-child(n + 4) {
+  animation-duration: 5.6s;
+}
+.tarjeta__marco {
+  position: relative;
+  display: block;
+  border-radius: var(--radio-card);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 500ms var(--ease-out);
+}
+.tarjeta__foto {
+  aspect-ratio: 25 / 27;
+  background: var(--crema-2);
+}
+/* Velo inferior para que el nombre se lea sobre cualquier foto. */
+.tarjeta__foto::after {
+  content: '';
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(to top, rgb(12 9 6 / 0.82), rgb(12 9 6 / 0));
+  pointer-events: none;
+}
+.tarjeta__rotulo {
+  position: absolute;
+  z-index: 1;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
   display: grid;
-  gap: 8px;
+  gap: 4px;
+  color: var(--crema);
 }
-.servicio__num {
-  font-size: 13px;
+.tarjeta__num {
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--oro-tinta);
+  letter-spacing: 0.14em;
+  color: var(--gold);
 }
-.servicio__nombre {
-  font-size: clamp(22px, 2vw, 28px);
+.tarjeta__titulo {
+  font-size: 20px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   line-height: 1.05;
 }
-.servicio__detalle {
-  font-size: 15px;
-  color: var(--tinta-suave);
-  max-width: 34ch;
+
+.tarjeta__panel {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-top: 8px;
+  border-radius: 16px;
+  background: var(--tinta);
+  color: var(--crema);
 }
-.servicio__pie {
+.tarjeta__recorte {
+  min-height: 0;
+  overflow: hidden;
+}
+.tarjeta__detalle {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+.tarjeta__texto {
+  font-size: 14px;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--crema) 78%, transparent);
+}
+.tarjeta__pie {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-top: 10px;
   padding-top: 14px;
-  border-top: 1px solid var(--tinta);
+  border-top: 1px solid color-mix(in oklab, var(--crema) 22%, transparent);
   font-size: 14px;
   font-weight: 600;
-  color: var(--tinta-suave);
 }
-.servicio__boton {
+.tarjeta__accion {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 40px;
-  padding: 0 14px;
-  border: 1px solid var(--tinta);
-  color: var(--tinta);
+  color: var(--gold);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  transition:
-    background-color var(--t-hover) ease,
-    color var(--t-hover) ease;
 }
-.servicio__boton svg {
+.tarjeta__accion svg {
   width: 16px;
   height: 16px;
   transition: transform var(--t-ui) var(--ease-out);
 }
-.servicio__enlace:focus-visible {
+.tarjeta__marco:focus-visible {
   outline-offset: 6px;
-  outline-color: var(--tinta);
 }
+
+/* Con ratón: el panel está recogido y se despliega al pasar por encima (o al enfocar). */
 @media (hover: hover) and (pointer: fine) {
-  .servicio__enlace:hover .foto__zoom {
-    transform: scale(1.07);
+  .tarjeta__panel {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 8px;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 500ms var(--ease-out);
   }
-  .servicio__enlace:hover .servicio__precio {
+  .tarjeta:hover,
+  .tarjeta:focus-within {
+    z-index: 5;
+  }
+  .tarjeta:hover .tarjeta__marco,
+  .tarjeta:focus-within .tarjeta__marco {
+    transform: translateY(-16px);
+    box-shadow: 0 28px 48px -20px rgb(12 9 6 / 0.55);
+  }
+  .tarjeta:hover .tarjeta__panel,
+  .tarjeta:focus-within .tarjeta__panel {
+    grid-template-rows: 1fr;
+  }
+  .tarjeta:hover .foto__zoom {
+    transform: scale(1.06);
+  }
+  .tarjeta:hover .servicio__precio {
     transform: rotate(0deg) scale(1.06);
   }
-  .servicio__enlace:hover .servicio__boton {
-    background: var(--tinta);
-    color: var(--crema);
-  }
-  .servicio__enlace:hover .servicio__boton svg {
+  .tarjeta:hover .tarjeta__accion svg {
     transform: translate(2px, -2px);
   }
-}
-@media (max-width: 1024px) {
-  .servicios__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .tarjeta__marco {
+    transition:
+      transform 500ms var(--ease-out),
+      box-shadow 500ms var(--ease-out);
   }
 }
-@media (max-width: 600px) {
-  .servicios__grid {
-    grid-template-columns: 1fr;
-  }
-  .servicio__foto {
-    aspect-ratio: 4 / 3;
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta:hover .tarjeta__marco,
+  .tarjeta:focus-within .tarjeta__marco {
+    transform: none;
   }
 }
 
@@ -709,41 +826,61 @@
 
 .pasos__lista {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(40px, 4vw, 56px) clamp(20px, 2.4vw, 40px);
+  grid-template-columns: repeat(3, minmax(0, 290px));
+  justify-content: space-between;
+  gap: 56px 24px;
   align-items: start;
 }
-.paso-tarjeta__foto {
-  aspect-ratio: 3 / 4;
-  margin-bottom: 24px;
+/* Cada paso flota sin parar, cada uno a su ritmo para que no se muevan al unísono. */
+.paso-flota {
+  animation: flotar 5s ease-in-out infinite;
 }
-.paso-tarjeta__texto {
+.paso-flota:nth-child(2) {
+  animation-delay: -1.7s;
+}
+.paso-flota:nth-child(3) {
+  animation-delay: -3.4s;
+}
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.paso-flota__foto {
+  aspect-ratio: 25 / 27;
+}
+.paso-flota__aro {
+  margin-bottom: 22px;
+}
+.paso-flota__texto {
   display: grid;
   gap: 10px;
 }
-.paso-tarjeta__num {
-  font-size: clamp(52px, 5vw, 76px);
+.paso-flota__num {
+  font-size: clamp(48px, 4.4vw, 64px);
   font-weight: 800;
   line-height: 1;
   color: transparent;
   -webkit-text-stroke: 1.5px var(--gold);
 }
-.paso-tarjeta h3 {
-  font-size: 22px;
+.paso-flota h3 {
+  font-size: 20px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.paso-tarjeta p {
-  max-width: 36ch;
+.paso-flota p {
+  max-width: 34ch;
+  font-size: 15px;
   color: var(--muted);
 }
-@media (max-width: 860px) {
+@media (max-width: 600px) {
   .pasos__lista {
     grid-template-columns: 1fr;
-  }
-  .paso-tarjeta__foto {
-    aspect-ratio: 4 / 3;
   }
 }
 

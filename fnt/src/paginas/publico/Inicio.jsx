@@ -195,11 +195,15 @@ const FOTOS = {
   brocha: { src: '/imagenes/brocha-afeitar.jpg', ancho: 1800, alto: 2700 },
   peine: { src: '/imagenes/peine-negro.jpg', ancho: 1800, alto: 1200 },
   navaja: { src: '/imagenes/navaja-madera.jpg', ancho: 1800, alto: 2700 },
+  guias: { src: '/imagenes/maquinas-fila-madera.jpg', ancho: 1800, alto: 2696 },
+  maquinaDorada: { src: '/imagenes/maquinas-mesa-dorada.jpg', ancho: 1800, alto: 1200, posicion: '35% 50%' },
 };
 
 // La foto se elige por el nombre del servicio; si no coincide ninguna, se reparten en orden.
 const REGLAS_FOTO = [
   [/corte.*barba|barba.*corte/i, 'navajaPeine'],
+  [/buzz|rapad/i, 'guias'],
+  [/low fade|fade bajo/i, 'maquinaDorada'],
   [/fade|degrad|máquina|maquina/i, 'maquina'],
   [/barba|afeit/i, 'brocha'],
   [/niñ|infantil/i, 'peine'],
@@ -244,29 +248,53 @@ function Servicios({ estado }) {
           {lista.map((s, i) => {
             const foto = fotoDeServicio(s.nombre, i);
             return (
-              <li key={s.id} className="servicio">
-                <Link to={`/agendar?servicio=${s.id}`} className="servicio__enlace">
-                  <FotoRevelada {...foto} retraso={(i % 3) * 0.1} className="servicio__foto">
-                    <span className="servicio__precio num">{dinero(s.precio)}</span>
-                  </FotoRevelada>
-                  <Revelar className="servicio__cuerpo" retraso={0.15 + (i % 3) * 0.1} distancia={16}>
-                    <span className="servicio__num num">{String(i + 1).padStart(2, '0')}</span>
-                    <h3 className="servicio__nombre">{s.nombre}</h3>
-                    {s.descripcion && <p className="servicio__detalle">{s.descripcion}</p>}
-                    <span className="servicio__pie">
-                      <span className="num">{duracion(s.duracion_min)}</span>
-                      <span className="servicio__boton">
-                        Agendar <ArrowUpRight />
-                      </span>
+              <li key={s.id} className="tarjeta">
+                <Tarjeta
+                  como={Link}
+                  to={`/agendar?servicio=${s.id}`}
+                  foto={foto}
+                  retraso={(i % 3) * 0.1}
+                  numero={i + 1}
+                  titulo={s.nombre}
+                  precio={dinero(s.precio)}
+                >
+                  {s.descripcion && <p className="tarjeta__texto">{s.descripcion}</p>}
+                  <span className="tarjeta__pie">
+                    <span className="num">{duracion(s.duracion_min)}</span>
+                    <span className="tarjeta__accion">
+                      Agendar <ArrowUpRight />
                     </span>
-                  </Revelar>
-                </Link>
+                  </span>
+                </Tarjeta>
               </li>
             );
           })}
         </ul>
       )}
     </section>
+  );
+}
+
+// Card de foto con nombre (y precio) siempre a la vista. Con ratón, al pasar por encima sube
+// y despliega debajo un panel con el detalle; en pantallas táctiles el panel queda abierto.
+function Tarjeta({ como: Elemento = 'div', foto, retraso, numero, titulo, precio, children, ...resto }) {
+  return (
+    <Elemento className="tarjeta__marco" {...resto}>
+      <span className="aro">
+        <FotoRevelada {...foto} retraso={retraso} className="tarjeta__foto">
+          {precio && <span className="servicio__precio num">{precio}</span>}
+          <span className="tarjeta__rotulo">
+            <span className="tarjeta__num num">{String(numero).padStart(2, '0')}</span>
+            <h3 className="tarjeta__titulo">{titulo}</h3>
+          </span>
+        </FotoRevelada>
+      </span>
+      <div className="tarjeta__panel">
+        <div className="tarjeta__recorte">
+          <div className="tarjeta__detalle">{children}</div>
+        </div>
+      </div>
+    </Elemento>
   );
 }
 
@@ -365,10 +393,12 @@ function ComoFunciona() {
       </div>
       <ol className="pasos__lista">
         {PASOS.map((p, i) => (
-          <li key={p.titulo} className="paso-tarjeta">
-            <FotoRevelada {...p.foto} retraso={i * 0.12} className="paso-tarjeta__foto" />
-            <Revelar className="paso-tarjeta__texto" retraso={0.2 + i * 0.12} distancia={16}>
-              <span className="paso-tarjeta__num num" aria-hidden="true">
+          <li key={p.titulo} className="paso-flota">
+            <span className="aro paso-flota__aro">
+              <FotoRevelada {...p.foto} retraso={i * 0.12} className="paso-flota__foto" />
+            </span>
+            <Revelar className="paso-flota__texto" retraso={0.2 + i * 0.12} distancia={16}>
+              <span className="paso-flota__num num" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <h3>{p.titulo}</h3>

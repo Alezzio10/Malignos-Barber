@@ -16,3 +16,5 @@ Fotos con licencia gratuita para uso comercial ([Unsplash License](https://unspl
 | kit-completo.jpg | https://www.pexels.com/photo/10517483/ |
 | silla-barbero.jpg | https://images.unsplash.com/photo-1621645582931-d1d3e6564943 |
 | barberia-interior.jpg | https://images.unsplash.com/photo-1585747860715-2ba37e788b70 |
+| maquinas-mesa-dorada.jpg | https://www.pexels.com/photo/7697712/ |
+| maquinas-fila-madera.jpg | https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1 |
