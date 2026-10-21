@@ -1,0 +1,99 @@
+.tarjeta-sellos {
+  --hueco: 44px;
+  display: grid;
+  gap: 18px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 22px 24px 18px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.tarjeta-sellos--grande {
+  --hueco: clamp(46px, 8vw, 76px);
+  gap: clamp(18px, 3vw, 28px);
+  padding: clamp(22px, 4vw, 40px);
+}
+.tarjeta-sellos--chica {
+  --hueco: 18px;
+  gap: 0;
+  padding: 0;
+  background: none;
+}
+.tarjeta-sellos--chica .tarjeta-sellos__cabeza,
+.tarjeta-sellos--chica .tarjeta-sellos__pie {
+  display: none;
+}
+
+.tarjeta-sellos__cabeza {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.tarjeta-sellos__marca {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: 18px;
+}
+.tarjeta-sellos--grande .tarjeta-sellos__marca {
+  font-size: clamp(18px, 2.4vw, 26px);
+}
+.tarjeta-sellos__titular {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.tarjeta-sellos__huecos {
+  display: grid;
+  grid-template-columns: repeat(var(--columnas), var(--hueco));
+  gap: calc(var(--hueco) * 0.32);
+}
+.tarjeta-sellos--chica .tarjeta-sellos__huecos {
+  grid-template-columns: repeat(10, var(--hueco));
+  gap: 4px;
+}
+
+.hueco {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--hueco);
+  height: var(--hueco);
+  border-radius: 50%;
+  background: var(--bg);
+}
+.hueco--premio {
+  background: transparent;
+  outline: 2px dashed var(--gold-deep);
+  outline-offset: -2px;
+}
+.hueco__sello {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--on-gold);
+}
+.hueco__sello svg {
+  width: 56%;
+  height: 56%;
+}
+.tarjeta-sellos--chica .hueco__sello svg {
+  display: none;
+}
+.hueco__texto {
+  font-size: calc(var(--hueco) * 0.24);
+  font-weight: 700;
+  color: var(--gold);
+}
+.tarjeta-sellos--chica .hueco__texto {
+  display: none;
+}
+
+.tarjeta-sellos__pie {
+  font-size: 14px;
+  color: var(--muted);
+}

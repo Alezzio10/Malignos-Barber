@@ -1,0 +1,60 @@
+/* Paleta tomada del logo: negro de fondo, oro de las letras y el cobre de los ornamentos. */
+:root {
+  color-scheme: dark;
+
+  --bg: #0b0907;
+  --surface: #14110d;
+  --surface-2: #1d1913;
+  --surface-3: #27211a;
+  --line: #3a3127;
+  --line-strong: #574a3a;
+
+  --ink: #f2e9d8;
+  --muted: #b9ab93;
+  --faint: #8c7f6b;
+
+  --gold: #d9ae4f;
+  --gold-strong: #ecc56c;
+  --gold-deep: #9b7428;
+  --on-gold: #160f04;
+  --copper: #b04e37;
+
+  /* Colores del sitio público: papel crema, naranja de taller y acero azul noche (de las fotos). */
+  --crema: #efe6d4;
+  --crema-2: #e3d6bd;
+  --tinta: #17120d;
+  --tinta-suave: #5b4d3d;
+  --oro-tinta: #7a5a1c;
+  --naranja: #e0632b;
+  --on-naranja: #1a0b03;
+  --acero: #141a25;
+  --acero-claro: #9db0c9;
+
+  /* Series de gráficos (validadas para daltonismo sobre --surface). */
+  --serie-ingresos: #b88a2e;
+  --serie-gastos: #b04e37;
+
+  /* Estados: siempre acompañados de texto o icono. */
+  --ok: #8fc287;
+  --aviso: #e3b25c;
+  --error: #ef8a72;
+  --error-fondo: #2a1510;
+  --info: #9fb8cf;
+
+  --font-display: 'Rye', 'Times New Roman', serif;
+  --font-ui: 'Hanken Grotesk Variable', 'Segoe UI', system-ui, sans-serif;
+
+  --r: 2px;
+  --r-pill: 999px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-ui: 220ms;
+  --t-reveal: 800ms;
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --sombra-flotante: 0 18px 48px -12px rgb(0 0 0 / 0.7), 0 2px 8px rgb(0 0 0 / 0.5);
+}
