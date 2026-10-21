@@ -21,8 +21,11 @@ export default function Inicio() {
 
   return (
     <div className="sitio">
-      <Cinta servicios={servicios.datos} />
-      <BarraSitio />
+      {/* La cinta y la barra quedan juntas y fijas arriba al hacer scroll. */}
+      <div className="cabecera-fija">
+        <Cinta servicios={servicios.datos} />
+        <BarraSitio />
+      </div>
       <main>
         <Portada agenda={agenda} />
         <Servicios estado={servicios} />

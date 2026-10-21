@@ -143,6 +143,12 @@
 
 /* ---------- Cinta ---------- */
 
+.cabecera-fija {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
 .cinta {
   overflow: hidden;
   background: var(--gold);
